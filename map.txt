@@ -1,0 +1,18 @@
+# Lines starting with a hash (#) are ignored.
+#
+# This is the map file, it is comma separated and the fields are as follows:
+# <Location ID>          : The ID of this location
+# <North Location ID>    : The ID of the location to the North
+# <East Location ID>     : The ID of the location to the East
+# <South Location ID>    : The ID of the location to the South
+# <West Location ID>     : The ID of the location to the West
+# <Up Location ID>       : The ID of the location above
+# <Down Location ID>     : The ID of the location below
+# <Location Name>        : A short name for the location
+# <Location Description> : A long description of the location
+#
+# An ID of zero means there's nothing there, it's easier to see than blanks!
+# The starting room will be ID 1.
+#
+1,2,0,0,0,0,0,"Cave","You are in a dark cave."
+2,0,0,1,0,0,0,"Garden","You are in an abandoned garden."
