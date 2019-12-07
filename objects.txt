@@ -1,0 +1,15 @@
+# Lines starting with a hash (#) are ignored.
+#
+# This is the object file, it is comma separated and the fields are as follows:
+# <0 - Object ID>            : The ID of the object
+# <1 - Object Description>   : A description of the object
+# <2 - Location ID>          : The ID of the location of the object
+#
+# More fields need to be added to represent the behaviour of objects maybe?!
+#
+1,A bucket,1
+2,A red apple,3
+3,A green apple,3
+4,A statue of Terry Wogan,4
+5,A cheese sandwich,4
+6,The manual of knots,4

@@ -56,7 +56,76 @@ def scroll(lines=4):
     # Print a few empty lines
     for x in range(0, lines):
         print()
-        time.sleep(.2)        
+        time.sleep(.2)  
+
+# **********************************************************************
+# Format a list into "correct English", with comma's and ands in the 
+# right place.
+#
+# ********************************************************************** 
+def formatList(itemList):
+
+    items = ""
+
+    if len(itemList) == 1:
+        return itemList[0]
+    elif len(itemList) == 2:
+        return itemList[0] + " and " + itemList[1]
+    else:
+        items = itemList[0]
+        for x in range(1, len(itemList)):
+            if x == len(itemList)-1:
+                items = items + " and " + itemList[x]
+            else:
+                items = items + ", " + itemList[x]
+
+        return items      
+
+# **********************************************************************
+# Load the game objects into a 2D list so they're in memory all the
+# time because they can move around once the game starts.
+# **********************************************************************    
+def getObjects(objFile = r"C:/\Users/\davey/\Documents/\GitHub/\adventure/\objects.txt"):
+
+    # An empty array to store the object list
+    objectList = []
+
+    # Open the object file
+    with open(objFile, mode='r') as objData:
+        objReader = csv.reader(objData, delimiter=',')
+        # Loop through each line in the file
+        for objDataRow in objReader:
+            # Ignore comments
+            if not objDataRow[0].startswith('#'):
+                # Add item info to the list
+                objectList.append(objDataRow)
+
+    # Return the object list
+    return objectList
+
+def showAllObjects(objectList):
+    for x in range(0,len(objectList)):
+        for y in range(0,len(objectList[x])):
+            print(str(x) + ", " + str(y) + " : " + objectList[x][y])
+
+# **********************************************************************
+# A procedure that displays any objects for the given location.
+# **********************************************************************    
+def showObjects(objectList, locationId):
+
+    # An list for objects found at the given locationi
+    objectsHere = []
+
+    # Loop thru all objects
+    for x in range(0,len(objectList)):
+        # Find any objects for the given location id
+        if int(objectList[x][2]) == locationId:
+            # ... and add the description to the objectsHere list
+            objectsHere.append(objectList[x][1])
+
+    if len(objectsHere) > 0:
+        print("The following items are here:")
+        print(formatList(objectsHere))
 
 # **********************************************************************
 # A function that returns a list object containing the fields from the
@@ -102,9 +171,6 @@ def showLocation(locationDetail):
 
     else:
         print("You're completely lost, ask the programmer!")
-
-    # Print a few empty lines
-    scroll()
     
 # **********************************************************************
 # A procedure that displays the exits from the current location.
@@ -131,29 +197,7 @@ def showExits(locationDetail):
     if int(locationDetail[6]) != 0:
         exits.append("Down")
     
-    return "You can go " + formatExits(exits) + "."
-
-# **********************************************************************
-# Format the exit list into "correct English"
-#
-# ********************************************************************** 
-def formatExits(exitList):
-
-    exits = ""
-
-    if len(exitList) == 1:
-        return exitList[0]
-    elif len(exitList) == 2:
-        return exitList[0] + " and " + exitList[1]
-    else:
-        exits = exitList[0]
-        for x in range(1, len(exitList)):
-            if x == len(exitList)-1:
-                exits = exits + " and " + exitList[x]
-            else:
-                exits = exits + ", " + exitList[x]
-
-        return exits
+    return "You can go " + formatList(exits) + "."
 
 # **********************************************************************
 # A function that handles moving the player around the map. The current
@@ -209,20 +253,25 @@ def movePlayer(locationDetail, direction):
 finished = False
 
 # Current location reference:
-locationId = 1       # The ID of the current location
+locationId = 1       # The ID of the current location, start at 1
+
+# Load the game objects
+objectList = getObjects()
 
 # Current location information, this is currently an 9 item list
-locationDetail = []
+# Get details for the current location, store in a list so we only
+# have to fetch it from the file once per location visit.
+locationDetail = getLocationRow(locationId)
+
+# Print some info about the current location
+showLocation(locationDetail)
+
+# Show any items here
+# showAllObjects(objectList)
+showObjects(objectList, locationId)
 
 # Keep on going until we're finished
 while not(finished):
-
-    # Get details for the current location, store in a list so we only
-    # have to fetch it from the file once per location visit.
-    locationDetail = getLocationRow(locationId)
-
-    # Print some info about the current location
-    showLocation(locationDetail)
 
     # If we don't have details, there must have been a problem so exit 
     # gracefully.
@@ -236,44 +285,96 @@ while not(finished):
     # Check for nothing
     if userCommand == "" :
         print("Don't be shy!")
+        scroll()
     
     # Check for "North"
     elif userCommand.lower() in  ("north","n") :
         print("You try to go North.")
         locationId = movePlayer(locationDetail,"n")
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()     
 
     # Check for "East"
     elif userCommand.lower() in ("east","e") :
         print("You try to go East.")
         locationId = movePlayer(locationDetail,"e")
-    
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()  
+
     # Check for "South"
     elif userCommand.lower() in ("south","s") :
         print("You try to go South.")
         locationId = movePlayer(locationDetail,"s")
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()  
 
     # Check for "West"
     elif userCommand.lower() in ("west","w") :
         print("You try to go West.")
         locationId = movePlayer(locationDetail,"w")
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()  
 
     # Check for "Up"
     elif userCommand.lower() in ("up","u") :
         print("You try to climb up.")
         locationId = movePlayer(locationDetail,"u")
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()  
 
     # Check for "Down"
     elif userCommand.lower() in ("down","d") :
         print("You try to climb down.")
         locationId = movePlayer(locationDetail,"d")
+        # Get new location details
+        locationDetail = getLocationRow(locationId) 
+        # Display new location details       
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()  
 
     # Check for "Look"
     elif userCommand.lower() in ("look","l") :
         print("You look around...")
         scroll()
         # Just re-show the current location details
-        showLocation(locationDetail)
-
+        showLocation(locationDetail)  
+        # Show any items here
+        showObjects(objectList, locationId)         
+        # Print a few empty lines
+        scroll()          
 
     # Check for "bye"
     elif userCommand.lower() in ("bye") :
@@ -282,5 +383,6 @@ while not(finished):
     # If we don't understand, print this
     else :
         print("Sorry! I don't understand " + userCommand)
+        scroll()
 
 print("Thanks for playing!") 
