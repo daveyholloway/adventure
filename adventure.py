@@ -49,6 +49,16 @@ def underline(message):
     return message + "\n" + ("=" * len(message))
 
 # **********************************************************************
+# Scroll a few lines
+#
+# ********************************************************************** 
+def scroll(lines=4):
+    # Print a few empty lines
+    for x in range(0, lines):
+        print()
+        time.sleep(.2)        
+
+# **********************************************************************
 # A function that returns a list object containing the fields from the
 # # map file for the location id passed in as a parameter.
 #
@@ -94,9 +104,7 @@ def showLocation(locationDetail):
         print("You're completely lost, ask the programmer!")
 
     # Print a few empty lines
-    for x in range(0, 4):
-        print()
-        time.sleep(.2)
+    scroll()
     
 # **********************************************************************
 # A procedure that displays the exits from the current location.
@@ -123,7 +131,7 @@ def showExits(locationDetail):
     if int(locationDetail[6]) != 0:
         exits.append("Down")
     
-    return "You can go " + formatExits(exits)
+    return "You can go " + formatExits(exits) + "."
 
 # **********************************************************************
 # Format the exit list into "correct English"
@@ -210,7 +218,7 @@ locationDetail = []
 while not(finished):
 
     # Get details for the current location, store in a list so we only
-    # have to fetch it from the file once per location
+    # have to fetch it from the file once per location visit.
     locationDetail = getLocationRow(locationId)
 
     # Print some info about the current location
@@ -258,6 +266,14 @@ while not(finished):
     elif userCommand.lower() in ("down","d") :
         print("You try to climb down.")
         locationId = movePlayer(locationDetail,"d")
+
+    # Check for "Look"
+    elif userCommand.lower() in ("look","l") :
+        print("You look around...")
+        scroll()
+        # Just re-show the current location details
+        showLocation(locationDetail)
+
 
     # Check for "bye"
     elif userCommand.lower() in ("bye") :
