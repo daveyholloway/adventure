@@ -19,6 +19,7 @@
 #
 # **********************************************************************
 import csv                       # Handles CSV files
+import time                      # Used for delays
 
 # **********************************************************************
 # Start of Functions and procedures
@@ -41,78 +42,154 @@ def areYouSure(message = "Are you sure? : "):
         return False
 
 # **********************************************************************
-# A function that returns a row from the map file for the location id
-# passed in as a parameter.
+# Text formatting - Underline
+#
+# **********************************************************************  
+def underline(message):
+    return message + "\n" + ("=" * len(message))
+
+# **********************************************************************
+# A function that returns a list object containing the fields from the
+# # map file for the location id passed in as a parameter.
 #
 # **********************************************************************    
-def getLocationRow(locationId, mapFile = r"C:/\Users/\d7998/\Desktop/\Adventure/\map.txt"):
+def getLocationRow(locationId, mapFile = r"C:/\Users/\davey/\Documents/\GitHub/\adventure/\map.txt"):
 
-    # Variables to store the return values
-    exitNorth = 0
-    exitEast = 0
-    exitSouth = 0
-    exitWest = 0
-    exitUp = 0
-    exitDown = 0
-    locationName = ""
-    locationDescription = ""
-
-    # A boolean to record whether we found anything
-    found = False
+    # An empty array to store the location details if found
+    locationDetail = []
     
     # Open the map file
     with open(mapFile, mode='r') as mapData:
         mapReader = csv.reader(mapData, delimiter=',')
+        # Loop through each line in the file
         for mapDataRow in mapReader:
+            # Look for a matching location id
             if mapDataRow[0] == str(locationId):
-                exitNorth = mapDataRow[1]
-                exitEast = mapDataRow[2]
-                exitSouth = mapDataRow[3]
-                exitWest = mapDataRow[4]
-                exitUp = mapDataRow[5]
-                exitDown = mapDataRow[6]
-                locationName = mapDataRow[7]
-                locationDescription = mapDataRow[8]
+                # Found a match so save the details to return to
+                # the calling routine 
+                locationDetail = mapDataRow
 
-                found = True
-                
-    # If we found a row, return it, other wise return a room id of 0
-    if found:
-        return locationId, exitNorth, exitEast, exitSouth, exitWest, exitUp, exitDown, locationName, locationDescription
-    else:
-        return 0,0,0,0,0,0,0,"",""
+    # Return the location details, if any were found the array will 
+    # have 9 elements, otherwise it'll have 0.
+    return locationDetail
+    
 
 # **********************************************************************
-# A procedure that displays the current location details.
-#
+# A procedure that displays the current location details. Pass in the
+# array/list that contains all of the info fetched from the file for
+# a given location id.
 # **********************************************************************    
-def showLocation(locationId):
+def showLocation(locationDetail):
 
-    # Variables to store the return values
-    exitNorth = 0
-    exitEast = 0
-    exitSouth = 0
-    exitWest = 0
-    exitUp = 0
-    exitDown = 0
-    locationName = ""
-    locationDescription = ""    
-
-    # Find location info for the current location
-    locationId, exitNorth, exitEast, exitSouth, exitWest, exitUp, exitDown, locationName, locationDescription = getLocationRow(locationId)
+    # Print a separator line
+    print("=" * 72)
 
     # Check to see if details were found
-    if locationId != 0:
-
-        print(locationName)
-        print("===================")
-        print(locationDescription)
+    if len(locationDetail) != 0:
+        print(underline(locationDetail[7]))
+        print(locationDetail[8])
+        print(showExits(locationDetail))
 
     else:
-
         print("You're completely lost, ask the programmer!")
-        print(locationId)
 
+    # Print a few empty lines
+    for x in range(0, 4):
+        print()
+        time.sleep(.2)
+    
+# **********************************************************************
+# A procedure that displays the exits from the current location.
+# **********************************************************************    
+def showExits(locationDetail):
+
+    exits = []
+    
+    if int(locationDetail[1]) != 0:
+        exits.append("North")
+
+    if int(locationDetail[2]) != 0:
+        exits.append("East")
+
+    if int(locationDetail[3]) != 0:
+        exits.append("South")
+
+    if int(locationDetail[4]) != 0:
+        exits.append("West")
+
+    if int(locationDetail[5]) != 0:
+        exits.append("Up")
+
+    if int(locationDetail[6]) != 0:
+        exits.append("Down")
+    
+    return "You can go " + formatExits(exits)
+
+# **********************************************************************
+# Format the exit list into "correct English"
+#
+# ********************************************************************** 
+def formatExits(exitList):
+
+    exits = ""
+
+    if len(exitList) == 1:
+        return exitList[0]
+    elif len(exitList) == 2:
+        return exitList[0] + " and " + exitList[1]
+    else:
+        exits = exitList[0]
+        for x in range(1, len(exitList)):
+            if x == len(exitList)-1:
+                exits = exits + " and " + exitList[x]
+            else:
+                exits = exits + ", " + exitList[x]
+
+        return exits
+
+# **********************************************************************
+# A function that handles moving the player around the map. The current
+# location details are passed in and the new location id is returned.
+#
+# **********************************************************************    
+def movePlayer(locationDetail, direction):
+    # First of all, determine if the move is valid?
+    # Check for all invalid combinations first
+    if (direction == "n" and int(locationDetail[1]) == 0) or \
+       (direction == "e" and int(locationDetail[2]) == 0) or \
+       (direction == "s" and int(locationDetail[3]) == 0) or \
+       (direction == "w" and int(locationDetail[4]) == 0) or \
+       (direction == "u" and int(locationDetail[5]) == 0) or \
+       (direction == "d" and int(locationDetail[6]) == 0):
+        
+        # Output an appropriate message, return the original
+        # location id.
+        print("You can't go that way!")
+        return int(locationDetail[0])
+    
+    # Go North
+    elif direction == "n":
+        return int(locationDetail[1])
+
+    # Go East
+    elif direction == "e":
+        return int(locationDetail[2])
+
+    # Go South
+    elif direction == "s":
+        return int(locationDetail[3])
+
+    # Go West
+    elif direction == "w":
+        return int(locationDetail[4])
+
+    # Go Up
+    elif direction == "u":
+        return int(locationDetail[5])
+
+    # Go Up
+    elif direction == "d":
+        return int(locationDetail[6])
 
 # **********************************************************************
 # Start of the main program
@@ -123,14 +200,27 @@ def showLocation(locationId):
 # A boolean to indicate if we're finished
 finished = False
 
-# Current location details:
-locationId = 1       # The ID of the current room
+# Current location reference:
+locationId = 1       # The ID of the current location
+
+# Current location information, this is currently an 9 item list
+locationDetail = []
 
 # Keep on going until we're finished
 while not(finished):
 
+    # Get details for the current location, store in a list so we only
+    # have to fetch it from the file once per location
+    locationDetail = getLocationRow(locationId)
+
     # Print some info about the current location
-    showLocation(locationId)
+    showLocation(locationDetail)
+
+    # If we don't have details, there must have been a problem so exit 
+    # gracefully.
+    if len(locationDetail) == 0:
+        print("Logic has broken down, exiting to reality!")
+        finished = True
     
     # Read the first keyboard input
     userCommand = input("What next? : ")
@@ -141,19 +231,33 @@ while not(finished):
     
     # Check for "North"
     elif userCommand.lower() in  ("north","n") :
-        print("You go North.")
+        print("You try to go North.")
+        locationId = movePlayer(locationDetail,"n")
 
     # Check for "East"
     elif userCommand.lower() in ("east","e") :
-        print("You go East.")
+        print("You try to go East.")
+        locationId = movePlayer(locationDetail,"e")
     
     # Check for "South"
     elif userCommand.lower() in ("south","s") :
-        print("You go South.")
+        print("You try to go South.")
+        locationId = movePlayer(locationDetail,"s")
 
     # Check for "West"
     elif userCommand.lower() in ("west","w") :
-        print("You go West.")
+        print("You try to go West.")
+        locationId = movePlayer(locationDetail,"w")
+
+    # Check for "Up"
+    elif userCommand.lower() in ("up","u") :
+        print("You try to climb up.")
+        locationId = movePlayer(locationDetail,"u")
+
+    # Check for "Down"
+    elif userCommand.lower() in ("down","d") :
+        print("You try to climb down.")
+        locationId = movePlayer(locationDetail,"d")
 
     # Check for "bye"
     elif userCommand.lower() in ("bye") :

@@ -1,18 +1,22 @@
 # Lines starting with a hash (#) are ignored.
 #
 # This is the map file, it is comma separated and the fields are as follows:
-# <Location ID>          : The ID of this location
-# <North Location ID>    : The ID of the location to the North
-# <East Location ID>     : The ID of the location to the East
-# <South Location ID>    : The ID of the location to the South
-# <West Location ID>     : The ID of the location to the West
-# <Up Location ID>       : The ID of the location above
-# <Down Location ID>     : The ID of the location below
-# <Location Name>        : A short name for the location
-# <Location Description> : A long description of the location
+# <0 - Location ID>          : The ID of this location
+# <1 - North Location ID>    : The ID of the location to the North
+# <2 - East Location ID>     : The ID of the location to the East
+# <3 - South Location ID>    : The ID of the location to the South
+# <4 - West Location ID>     : The ID of the location to the West
+# <5 - Up Location ID>       : The ID of the location above
+# <6 - Down Location ID>     : The ID of the location below
+# <7 - Location Name>        : A short name for the location
+# <8 - Location Description> : A long description of the location
 #
 # An ID of zero means there's nothing there, it's easier to see than blanks!
 # The starting room will be ID 1.
 #
-1,2,0,0,0,0,0,"Cave","You are in a dark cave."
-2,0,0,1,0,0,0,"Garden","You are in an abandoned garden."
+1,2,4,5,6,0,0,Starting cave,You are in a dark cave.
+2,0,0,1,0,3,0,North Garden,You are in an abandoned garden.
+3,0,0,0,0,0,2,Tree,You're up a tree
+4,0,0,0,1,0,0,East Cave,You're in the East Cave
+5,1,0,0,0,0,0,South Cave,You're in the South Cave
+6,0,1,0,0,0,0,West Cave,You're in the West Cave
