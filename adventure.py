@@ -34,6 +34,20 @@ class item(object):
         self.description = description
         self.location = location
 
+# The location class
+class location(object):
+
+    def __init__(self, locationFileRow):
+        self.id = locationFileRow[0]
+        self.locationIDNorth = locationFileRow[1]
+        self.locationIDEast = locationFileRow[2]
+        self.locationIDSouth = locationFileRow[3]
+        self.locationIDWest = locationFileRow[4]
+        self.locationIDUp = locationFileRow[5]
+        self.locationIDDown = locationFileRow[6]
+        self.name = locationFileRow[7]
+        self.description = locationFileRow[8]
+
 # **********************************************************************
 # Start of Functions and procedures
 #
@@ -272,7 +286,7 @@ locationId = 1       # The ID of the current location, start at 1
 # Load the game objects
 objectList = getObjects()
 
-# Current location information, this is currently an 9 item list
+# Current location information, this is currently a 9 item list
 # Get details for the current location, store in a list so we only
 # have to fetch it from the file once per location visit.
 locationDetail = getLocationRow(locationId)
