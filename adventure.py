@@ -22,6 +22,19 @@ import csv                       # Handles CSV files
 import time                      # Used for delays
 
 # **********************************************************************
+# Classes
+#
+# **********************************************************************
+
+# The item class
+class item(object):
+
+    def __init__(self, id, description, location):
+        self.id = id
+        self.description = description
+        self.location = location
+
+# **********************************************************************
 # Start of Functions and procedures
 #
 # **********************************************************************
@@ -98,11 +111,12 @@ def getObjects(objFile = r"C:/\Users/\davey/\Documents/\GitHub/\adventure/\objec
             # Ignore comments
             if not objDataRow[0].startswith('#'):
                 # Add item info to the list
-                objectList.append(objDataRow)
+                objectList.append(item(int(objDataRow[0]),objDataRow[1],int(objDataRow[2])))
 
     # Return the object list
     return objectList
 
+# Used for debugging
 def showAllObjects(objectList):
     for x in range(0,len(objectList)):
         for y in range(0,len(objectList[x])):
@@ -113,15 +127,15 @@ def showAllObjects(objectList):
 # **********************************************************************    
 def showObjects(objectList, locationId):
 
-    # An list for objects found at the given locationi
+    # An list to hold the names of  objects found at the given location
     objectsHere = []
 
     # Loop thru all objects
     for x in range(0,len(objectList)):
-        # Find any objects for the given location id
-        if int(objectList[x][2]) == locationId:
+        # Find any items for the given location id
+        if objectList[x].location == locationId:
             # ... and add the description to the objectsHere list
-            objectsHere.append(objectList[x][1])
+            objectsHere.append(objectList[x].description)
 
     if len(objectsHere) > 0:
         print("The following items are here:")
